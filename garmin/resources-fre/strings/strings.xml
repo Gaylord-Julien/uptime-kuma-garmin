@@ -1,5 +1,5 @@
 <strings>
-    <string id="AppName" scope="glance">Uptime Kuma</string>
+    <string id="AppName" scope="glance">Kuma Watch</string>
     <string id="UrlTitle">URL du proxy (https://…/status)</string>
     <string id="TokenTitle">Token du proxy</string>
 

@@ -12,9 +12,9 @@ OUT = sys.argv[1]
 
 TEXT = {
     "en": {"updated": "Updated", "all_up": "All up", "down": "down", "no_phone": "No phone\nconnection",
-           "retry": "Tap to retry", "tagline": "Your monitors on your wrist"},
+           "retry": "Tap to retry", "tagline": "Uptime Kuma on your wrist"},
     "fr": {"updated": "MAJ", "all_up": "Tout est up", "down": "down", "no_phone": "Pas de connexion\ntéléphone",
-           "retry": "Toucher pour réessayer", "tagline": "L'état de vos monitors au poignet"},
+           "retry": "Toucher pour réessayer", "tagline": "Uptime Kuma au poignet"},
 }
 W = H = 390
 REG = "/usr/share/fonts/TTF/Roboto-Regular.ttf"
@@ -164,7 +164,7 @@ def render(lang, out):
     cd.ellipse([wx - 8, wy - 8, wx + ws + 8, wy + ws + 8], fill=(8, 8, 8))
     watch = round_mask(shots["screenshot-1-list.png"].resize((ws, ws), Image.LANCZOS))
     cover.paste(watch, (wx, wy), watch)
-    cd.text((110, 250), "Uptime Kuma", font=ImageFont.truetype(BOLD, 96), fill=WHITE, anchor="ls")
+    cd.text((110, 250), "Kuma Watch", font=ImageFont.truetype(BOLD, 96), fill=WHITE, anchor="ls")
     cd.text((112, 320), t["tagline"], font=ImageFont.truetype(REG, 40), fill=LT, anchor="ls")
     for i, (label, color) in enumerate([("down", RED), ("pending", ORANGE), ("maintenance", BLUE), ("up", GREEN)]):
         y = 410 + i * 62

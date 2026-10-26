@@ -1,6 +1,6 @@
 <strings>
     <!-- Default (English); translations live in resources-<lang>/strings/strings.xml. -->
-    <string id="AppName" scope="glance">Uptime Kuma</string>
+    <string id="AppName" scope="glance">Kuma Watch</string>
     <string id="UrlTitle">Proxy URL (https://…/status)</string>
     <string id="TokenTitle">Proxy token</string>
 

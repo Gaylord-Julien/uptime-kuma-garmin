@@ -1,6 +1,8 @@
-# Uptime Kuma for Garmin vivoactive 6
+# Kuma Watch: Uptime Kuma for Garmin vivoactive 6
 
-Check the up/down state of your Uptime Kuma monitors from your watch.
+Check the up/down state of your [Uptime Kuma](https://github.com/louislam/uptime-kuma) monitors from your watch.
+
+Unofficial project, not affiliated with Uptime Kuma. MIT licensed.
 
 ```
 proxy/    Python micro-service: Uptime Kuma /metrics → compact JSON
@@ -198,7 +200,7 @@ Keep this key safe: every update of an installed app must be signed with the sam
 ### Configuration
 
 The URL and token are **not** part of the build (`properties.xml` leaves them empty): after installing from
-the Connect IQ Store, set them in the **Connect IQ** app on the phone → *My Device* → *My Apps* → Uptime Kuma →
+the Connect IQ Store, set them in the **Connect IQ** app on the phone → *My Device* → *My Apps* → Kuma Watch →
 *Settings*. While they're empty, the app shows "URL/token not configured".
 
 A sideloaded app (installed over USB) has no access to these settings. For local testing, temporarily fill in
