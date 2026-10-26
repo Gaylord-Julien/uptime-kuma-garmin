@@ -67,13 +67,19 @@ module Kuma {
         return { "d" => data["d"] as Number, "t" => data["t"] as Number, "ts" => Time.now().value() };
     }
 
-    // "14:32" today, "24 Oct" if older than a day (month name in the device language).
+    // "14:32" (or "2:32 pm" on a 12-hour watch) today, "24 Oct" if older than a day
+    // (month name in the device language).
     function formatTime(ts as Number) as String {
         var info = Gregorian.info(new Time.Moment(ts), Time.FORMAT_MEDIUM);
         if (Time.now().value() - ts > Gregorian.SECONDS_PER_DAY) {
             return info.day + " " + info.month;
         }
-        return info.hour.format("%02d") + ":" + info.min.format("%02d");
+        var min = info.min.format("%02d");
+        if (System.getDeviceSettings().is24Hour) {
+            return info.hour.format("%02d") + ":" + min;
+        }
+        var hour = info.hour % 12 == 0 ? 12 : info.hour % 12;
+        return hour + ":" + min + (info.hour < 12 ? " am" : " pm");
     }
 
     function getSetting(key as String) as String {
