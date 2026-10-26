@@ -1,6 +1,7 @@
 import json
 import logging
 import pathlib
+import socket
 import sys
 import threading
 import unittest
@@ -42,7 +43,7 @@ class FakeCache(StatusCache):
 class ServerTest(unittest.TestCase):
     def setUp(self):
         self.cache = FakeCache()
-        self.server = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(self.cache, TOKEN))
+        self.server = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(self.cache, TOKEN, timeout=0.5))
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         self.base = f"http://127.0.0.1:{self.server.server_address[1]}"
 
@@ -88,6 +89,11 @@ class ServerTest(unittest.TestCase):
     def test_not_kuma_metrics(self):
         self.cache.response = "<html>login</html>"
         self.assertEqual(self.get("/status"), (502, b'{"e":"kuma"}'))
+
+    def test_idle_connection_closed(self):
+        with socket.create_connection(self.server.server_address, timeout=5) as sock:
+            sock.sendall(b"GET /status HTTP/1.1\r\n")  # never finishes the request
+            self.assertEqual(sock.recv(1024), b"")
 
     def test_unknown_path(self):
         self.assertEqual(self.get("/metrics")[0], 404)

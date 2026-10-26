@@ -22,6 +22,8 @@ from metrics import build_payload, encode, parse_monitor_status, summarize
 log = logging.getLogger("kuma-proxy")
 
 KUMA_TIMEOUT = 10
+# Closes idle or trickling client connections (slowloris); a normal request takes milliseconds.
+CLIENT_TIMEOUT = 10
 USER_AGENT = "kuma-watch-proxy/1.0"
 ERR_KUMA = b'{"e":"kuma"}'
 ERR_AUTH = b'{"e":"auth"}'
@@ -61,11 +63,14 @@ class StatusCache:
             return resp.read().decode("utf-8")
 
 
-def make_handler(cache: StatusCache, proxy_token: str):
+def make_handler(cache: StatusCache, proxy_token: str, timeout: float = CLIENT_TIMEOUT):
     expected = f"Bearer {proxy_token}".encode()
+    client_timeout = timeout
 
     class Handler(BaseHTTPRequestHandler):
         server_version = "kuma-proxy"
+        # Read by StreamRequestHandler: socket timeout for each connection.
+        timeout = client_timeout
         sys_version = ""
 
         def do_GET(self):
