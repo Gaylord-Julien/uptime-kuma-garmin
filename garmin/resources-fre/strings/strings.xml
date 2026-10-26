@@ -1,0 +1,29 @@
+<strings>
+    <string id="AppName" scope="glance">Uptime Kuma</string>
+    <string id="UrlTitle">URL du proxy (https://…/status)</string>
+    <string id="TokenTitle">Token du proxy</string>
+
+    <!-- Glance -->
+    <string id="AllUp" scope="glance">Tout est up</string>
+    <string id="DownCount" scope="glance">$1$ down</string>
+    <string id="UpdatedAt" scope="glance">MAJ $1$</string>
+    <string id="NoData" scope="glance">Pas encore de données</string>
+
+    <!-- Main view -->
+    <string id="Loading">Chargement…</string>
+    <string id="Updating">Mise à jour…</string>
+    <string id="NoMonitors">Aucun monitor actif</string>
+    <string id="TapToRetry">Toucher pour réessayer</string>
+    <string id="ErrNotConfigured">URL/token
+non configurés</string>
+    <string id="ErrNoPhone">Pas de connexion
+téléphone</string>
+    <string id="ErrTimeout">Délai dépassé</string>
+    <string id="ErrHttps">HTTPS requis</string>
+    <string id="ErrToken">Token refusé</string>
+    <string id="ErrKuma">Uptime Kuma
+injoignable</string>
+    <string id="ErrBadResponse">Réponse invalide</string>
+    <string id="ErrTooLarge">Réponse trop lourde</string>
+    <string id="ErrOther">Erreur $1$</string>
+</strings>

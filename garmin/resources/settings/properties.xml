@@ -1,0 +1,5 @@
+<properties>
+    <!-- Left empty on purpose: set them in the Connect IQ app (app settings) after installing. -->
+    <property id="proxyUrl" type="string"></property>
+    <property id="proxyToken" type="string"></property>
+</properties>

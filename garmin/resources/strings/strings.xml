@@ -1,0 +1,30 @@
+<strings>
+    <!-- Default (English); translations live in resources-<lang>/strings/strings.xml. -->
+    <string id="AppName" scope="glance">Uptime Kuma</string>
+    <string id="UrlTitle">Proxy URL (https://…/status)</string>
+    <string id="TokenTitle">Proxy token</string>
+
+    <!-- Glance -->
+    <string id="AllUp" scope="glance">All up</string>
+    <string id="DownCount" scope="glance">$1$ down</string>
+    <string id="UpdatedAt" scope="glance">Updated $1$</string>
+    <string id="NoData" scope="glance">No data yet</string>
+
+    <!-- Main view -->
+    <string id="Loading">Loading…</string>
+    <string id="Updating">Updating…</string>
+    <string id="NoMonitors">No active monitor</string>
+    <string id="TapToRetry">Tap to retry</string>
+    <string id="ErrNotConfigured">URL/token
+not configured</string>
+    <string id="ErrNoPhone">No phone
+connection</string>
+    <string id="ErrTimeout">Request timed out</string>
+    <string id="ErrHttps">HTTPS required</string>
+    <string id="ErrToken">Token rejected</string>
+    <string id="ErrKuma">Uptime Kuma
+unreachable</string>
+    <string id="ErrBadResponse">Invalid response</string>
+    <string id="ErrTooLarge">Response too large</string>
+    <string id="ErrOther">Error $1$</string>
+</strings>

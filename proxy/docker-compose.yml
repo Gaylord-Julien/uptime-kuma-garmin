@@ -1,0 +1,20 @@
+services:
+  kuma-proxy:
+    build: .
+    image: kuma-proxy:latest
+    container_name: kuma-proxy
+    restart: unless-stopped
+    env_file: .env
+    # Only reachable locally: nginx or `tailscale serve` terminate HTTPS in front of it.
+    ports:
+      - "127.0.0.1:${PORT:-8080}:${PORT:-8080}"
+    read_only: true
+    # If Uptime Kuma runs in Docker on the same host, join its network and use
+    # KUMA_URL=http://uptime-kuma:3001
+    # networks:
+    #   - kuma
+
+# networks:
+#   kuma:
+#     external: true
+#     name: uptime-kuma_default

@@ -1,0 +1,8 @@
+<settings>
+    <setting propertyKey="@Properties.proxyUrl" title="@Strings.UrlTitle">
+        <settingConfig type="alphaNumeric" required="true"/>
+    </setting>
+    <setting propertyKey="@Properties.proxyToken" title="@Strings.TokenTitle">
+        <settingConfig type="password" required="true"/>
+    </setting>
+</settings>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<iq:manifest version="3" xmlns:iq="http://www.garmin.com/xml/connectiq">
+    <!--
+        type="watch-app" + getGlanceView(): on glance-capable devices (vivoactive 6 included)
+        a device app can provide its own glance and is launched from the glance loop.
+        This is what replaced widgets; it also gets the device-app memory budget.
+    -->
+    <iq:application id="5f4797ab0ccc4931b131e962b8c59261" type="watch-app" name="@Strings.AppName" entry="KumaApp" launcherIcon="@Drawables.LauncherIcon" minApiLevel="5.0.0">
+        <iq:products>
+            <iq:product id="vivoactive6"/>
+        </iq:products>
+        <iq:permissions>
+            <iq:uses-permission id="Communications"/>
+            <iq:uses-permission id="Background"/>
+        </iq:permissions>
+        <iq:languages>
+            <iq:language>eng</iq:language>
+            <iq:language>fre</iq:language>
+        </iq:languages>
+        <iq:barrels/>
+    </iq:application>
+</iq:manifest>
