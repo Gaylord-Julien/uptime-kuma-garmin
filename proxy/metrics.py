@@ -82,5 +82,10 @@ def build_payload(monitors: list[tuple[str, int]]) -> dict:
     }
 
 
+def summarize(payload: dict) -> dict:
+    """Counts only, for the watch's background service (64 KB of memory, list not needed)."""
+    return {"d": payload["d"], "t": payload["t"]}
+
+
 def encode(payload: dict) -> bytes:
     return json.dumps(payload, separators=(",", ":"), ensure_ascii=False).encode()

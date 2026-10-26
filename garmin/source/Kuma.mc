@@ -35,8 +35,14 @@ module Kuma {
         return null;
     }
 
-    function request(callback as Method(responseCode as Number, data as Dictionary or String or Null) as Void) as Void {
-        Communications.makeWebRequest(getSetting("proxyUrl"), null, {
+    // summary: counts only, without the monitor list (the background service has 64 KB of memory).
+    // A proxy that predates ?summary=1 ignores it and sends the full payload, which still works.
+    function request(summary as Boolean, callback as Method(responseCode as Number, data as Dictionary or String or Null) as Void) as Void {
+        var url = getSetting("proxyUrl");
+        if (summary) {
+            url += (url.find("?") == null ? "?" : "&") + "summary=1";
+        }
+        Communications.makeWebRequest(url, null, {
             :method => Communications.HTTP_REQUEST_METHOD_GET,
             :headers => { "Authorization" => "Bearer " + getSetting("proxyToken") },
             :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
@@ -44,7 +50,14 @@ module Kuma {
     }
 
     function isValid(data as Dictionary) as Boolean {
-        if (data["d"] instanceof Number && data["t"] instanceof Number && data["h"] instanceof Array) {
+        if (isSummary(data) && data["h"] instanceof Array) {
+            return true;
+        }
+        return false;
+    }
+
+    function isSummary(data as Dictionary) as Boolean {
+        if (data["d"] instanceof Number && data["t"] instanceof Number) {
             return true;
         }
         return false;

@@ -1,5 +1,7 @@
 # Kuma Watch: Uptime Kuma for Garmin vivoactive 6
 
+[![proxy](https://github.com/Gaylord-Julien/uptime-kuma-garmin/actions/workflows/proxy.yml/badge.svg)](https://github.com/Gaylord-Julien/uptime-kuma-garmin/actions/workflows/proxy.yml)
+
 Check the up/down state of your [Uptime Kuma](https://github.com/louislam/uptime-kuma) monitors from your watch.
 
 Unofficial project, not affiliated with Uptime Kuma. MIT licensed.
@@ -37,6 +39,10 @@ JSON, keeps the Uptime Kuma API key off the watch, and caches the result.
 
 Statuses: `0` down, `1` up, `2` pending, `3` maintenance.
 
+`GET /status?summary=1` returns the counts only, `{"d":1,"t":12}`. The watch's background service uses it:
+it only needs the counts for the glance and has 64 KB of memory, which a full list of several hundred
+monitors could exceed. Both variants come from the same cached fetch.
+
 | Response | When |
 |----------|------|
 | `200` | OK (cached for `CACHE_TTL` seconds) |
@@ -61,10 +67,20 @@ appear in `/metrics`, nor in `t`. *Group* monitors are regular monitors and are 
 
 ### Run
 
+A multi-arch image (amd64, arm64) is published on every push to `main`:
+
+```bash
+docker run -d --name kuma-proxy -p 127.0.0.1:8080:8080 \
+  -e KUMA_URL=https://uptime-kuma.example.org -e KUMA_API_KEY=… -e PROXY_TOKEN=… \
+  ghcr.io/gaylord-julien/uptime-kuma-garmin-proxy:latest
+```
+
+Or with Compose:
+
 ```bash
 cd proxy
 cp .env.example .env    # then fill it in
-docker compose up -d --build
+docker compose up -d    # add --build to build the image locally
 
 curl -s localhost:8080/healthz
 curl -s -H "Authorization: Bearer $(grep ^PROXY_TOKEN .env | cut -d= -f2)" localhost:8080/status
@@ -80,12 +96,16 @@ Without Docker: `KUMA_URL=… KUMA_API_KEY=… PROXY_TOKEN=… python3 server.py
 cd proxy && python3 -m unittest discover -s tests -v
 ```
 
+GitHub Actions runs them on every push and pull request touching `proxy/`, then builds the image.
+
 ### Deploying on Coolify
 
 Coolify handles HTTPS (Traefik + Let's Encrypt): no need for nginx or `docker-compose.yml`.
 
-1. *New Resource → Application* → this repository (or your fork) → Build Pack **Dockerfile**.
-2. **Base Directory**: `/proxy` · **Ports Exposes**: `8080`.
+1. *New Resource → Docker Image* → `ghcr.io/gaylord-julien/uptime-kuma-garmin-proxy:latest`,
+   or *New Resource → Application* → this repository (or your fork) → Build Pack **Dockerfile** with
+   **Base Directory** `/proxy`.
+2. **Ports Exposes**: `8080`.
 3. **Domains**: e.g. `https://kuma-watch.example.org` (a DNS record must point to the Coolify server).
 4. **Environment Variables**: `KUMA_URL`, `KUMA_API_KEY`, `PROXY_TOKEN` (and `CACHE_TTL` if needed).
    If Uptime Kuma runs on the same Coolify, its public URL works fine.

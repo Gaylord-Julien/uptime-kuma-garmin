@@ -1,6 +1,7 @@
 """Uptime Kuma -> Garmin proxy.
 
 GET /status   Bearer-protected, compact JSON summary of monitor states (cached CACHE_TTL s)
+              ?summary=1 returns the counts only, without the monitor list
 GET /healthz  liveness probe, no auth
 """
 
@@ -14,8 +15,9 @@ import time
 import urllib.error
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import parse_qs
 
-from metrics import build_payload, encode, parse_monitor_status
+from metrics import build_payload, encode, parse_monitor_status, summarize
 
 log = logging.getLogger("kuma-proxy")
 
@@ -36,17 +38,18 @@ class StatusCache:
         self.auth_header = f"Basic {token}"
         self.ttl = ttl
         self._lock = threading.Lock()
-        self._body: bytes | None = None
+        self._full: bytes | None = None
+        self._summary: bytes | None = None
         self._fetched_at = 0.0
 
-    def get(self) -> bytes:
+    def get(self, summary: bool = False) -> bytes:
         """Return the encoded payload; raises on any Uptime Kuma failure."""
         with self._lock:
-            if self._body is not None and time.monotonic() - self._fetched_at < self.ttl:
-                return self._body
-            self._body = encode(build_payload(parse_monitor_status(self._fetch())))
-            self._fetched_at = time.monotonic()
-            return self._body
+            if self._full is None or time.monotonic() - self._fetched_at >= self.ttl:
+                payload = build_payload(parse_monitor_status(self._fetch()))
+                self._full, self._summary = encode(payload), encode(summarize(payload))
+                self._fetched_at = time.monotonic()
+            return self._summary if summary else self._full
 
     def _fetch(self) -> str:
         # Cloudflare's bot protection rejects the default "Python-urllib/x.y" User-Agent with a 403.
@@ -66,21 +69,21 @@ def make_handler(cache: StatusCache, proxy_token: str):
         sys_version = ""
 
         def do_GET(self):
-            path = self.path.split("?", 1)[0]
+            path, _, query = self.path.partition("?")
             if path == "/healthz":
                 self._send(200, b"ok", "text/plain")
             elif path == "/status":
-                self._status()
+                self._status(parse_qs(query).get("summary") == ["1"])
             else:
                 self._send(404, ERR_NOT_FOUND)
 
-        def _status(self):
+        def _status(self, summary: bool):
             given = self.headers.get("Authorization", "").encode()
             if not hmac.compare_digest(given, expected):
                 self._send(401, ERR_AUTH)
                 return
             try:
-                body = cache.get()
+                body = cache.get(summary)
             except (OSError, urllib.error.URLError, ValueError) as e:
                 log.warning("Uptime Kuma unavailable: %s", e)
                 self._send(502, ERR_KUMA)

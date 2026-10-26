@@ -5,7 +5,7 @@ import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
-from metrics import build_payload, encode, parse_monitor_status  # noqa: E402
+from metrics import build_payload, encode, parse_monitor_status, summarize  # noqa: E402
 
 # Trimmed /metrics output from Uptime Kuma 2.x (tags become labels, monitor_id present).
 # "backup-nas" is paused: Kuma drops its series, it only shows up in the database.
@@ -109,6 +109,10 @@ class BuildPayloadTest(unittest.TestCase):
     def test_names_truncated_to_20(self):
         payload = build_payload([("x" * 40, 1)])
         self.assertEqual(len(payload["h"][0][0]), 20)
+
+    def test_summary_drops_the_list(self):
+        payload = build_payload([("ovh-vm", 0), ("nextcloud", 1)])
+        self.assertEqual(summarize(payload), {"d": 1, "t": 2})
 
     def test_encode_is_compact(self):
         body = encode(build_payload([("ovh-vm", 0), ("nextcloud", 1)]))

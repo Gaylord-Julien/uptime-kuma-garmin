@@ -1,7 +1,8 @@
 services:
   kuma-proxy:
+    # Published by CI for amd64 and arm64; `docker compose up -d --build` builds it locally instead.
+    image: ghcr.io/gaylord-julien/uptime-kuma-garmin-proxy:latest
     build: .
-    image: kuma-proxy:latest
     container_name: kuma-proxy
     restart: unless-stopped
     env_file: .env

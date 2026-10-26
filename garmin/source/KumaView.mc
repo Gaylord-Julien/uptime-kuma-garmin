@@ -39,7 +39,7 @@ class KumaView extends WatchUi.View {
         _error = Kuma.preflight();
         if (_error == null) {
             _loading = true;
-            Kuma.request(method(:onResponse));
+            Kuma.request(false, method(:onResponse));
         }
         WatchUi.requestUpdate();
     }

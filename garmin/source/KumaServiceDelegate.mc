@@ -15,12 +15,12 @@ class KumaServiceDelegate extends System.ServiceDelegate {
             Background.exit(null);
             return;
         }
-        Kuma.request(method(:onResponse));
+        Kuma.request(true, method(:onResponse));
     }
 
     // Only the summary is passed back: the glance doesn't need the monitor list.
     function onResponse(responseCode as Number, data as Dictionary or String or Null) as Void {
-        if (responseCode == 200 && data instanceof Dictionary && Kuma.isValid(data)) {
+        if (responseCode == 200 && data instanceof Dictionary && Kuma.isSummary(data)) {
             Background.exit(Kuma.summarize(data));
         } else {
             Background.exit(null);
