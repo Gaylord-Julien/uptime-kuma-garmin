@@ -5,7 +5,7 @@
         a device app can provide its own glance and is launched from the glance loop.
         This is what replaced widgets; it also gets the device-app memory budget.
     -->
-    <iq:application id="5f4797ab0ccc4931b131e962b8c59261" type="watch-app" name="@Strings.AppName" entry="KumaApp" launcherIcon="@Drawables.LauncherIcon" minApiLevel="5.0.0">
+    <iq:application id="b070d30f12a24496bdab663ed4918d1d" type="watch-app" name="@Strings.AppName" entry="KumaApp" launcherIcon="@Drawables.LauncherIcon" minApiLevel="5.0.0">
         <iq:products>
             <iq:product id="vivoactive6"/>
         </iq:products>
