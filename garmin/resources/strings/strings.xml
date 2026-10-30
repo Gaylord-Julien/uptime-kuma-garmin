@@ -3,6 +3,12 @@
     <string id="AppName" scope="glance">Kuma Watch</string>
     <string id="UrlTitle">Proxy URL (https://…/status)</string>
     <string id="TokenTitle">Proxy token</string>
+    <string id="RefreshTitle">Background refresh</string>
+    <string id="Minutes5">5 min</string>
+    <string id="Minutes10">10 min</string>
+    <string id="Minutes15">15 min</string>
+    <string id="Minutes30">30 min</string>
+    <string id="Minutes60">60 min</string>
 
     <!-- Glance -->
     <string id="AllUp" scope="glance">All up</string>

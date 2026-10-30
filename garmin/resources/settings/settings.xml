@@ -5,4 +5,13 @@
     <setting propertyKey="@Properties.proxyToken" title="@Strings.TokenTitle">
         <settingConfig type="password" required="true"/>
     </setting>
+    <setting propertyKey="@Properties.refreshMinutes" title="@Strings.RefreshTitle">
+        <settingConfig type="list">
+            <listEntry value="5">@Strings.Minutes5</listEntry>
+            <listEntry value="10">@Strings.Minutes10</listEntry>
+            <listEntry value="15">@Strings.Minutes15</listEntry>
+            <listEntry value="30">@Strings.Minutes30</listEntry>
+            <listEntry value="60">@Strings.Minutes60</listEntry>
+        </settingConfig>
+    </setting>
 </settings>

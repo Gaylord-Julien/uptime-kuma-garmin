@@ -15,7 +15,7 @@ module Kuma {
     // Set when the user asks for a Wi-Fi sync, so the system can't start one on its own.
     const STORAGE_SYNC_REQUESTED = "r";
     // Background temporal events can't fire more often than every 5 minutes.
-    const BACKGROUND_PERIOD = 5 * 60;
+    const MIN_BACKGROUND_PERIOD = 5 * 60;
 
     // Monitor states, as sent by the proxy.
     const DOWN = 0;
@@ -94,6 +94,13 @@ module Kuma {
         }
         var hour = info.hour % 12 == 0 ? 12 : info.hour % 12;
         return hour + ":" + min + (info.hour < 12 ? " am" : " pm");
+    }
+
+    // Seconds between background refreshes, from the "refreshMinutes" setting.
+    function backgroundPeriod() as Number {
+        var minutes = Application.Properties.getValue("refreshMinutes");
+        var period = minutes instanceof Number ? minutes * 60 : MIN_BACKGROUND_PERIOD;
+        return period < MIN_BACKGROUND_PERIOD ? MIN_BACKGROUND_PERIOD : period;
     }
 
     function getSetting(key as String) as String {

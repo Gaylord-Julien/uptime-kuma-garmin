@@ -2,4 +2,6 @@
     <!-- Left empty on purpose: set them in the Connect IQ app (app settings) after installing. -->
     <property id="proxyUrl" type="string"></property>
     <property id="proxyToken" type="string"></property>
+    <!-- Minutes between background refreshes of the glance; 5 is the system minimum. -->
+    <property id="refreshMinutes" type="number">5</property>
 </properties>

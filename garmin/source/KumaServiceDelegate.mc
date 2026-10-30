@@ -2,7 +2,7 @@ import Toybox.Background;
 import Toybox.Lang;
 import Toybox.System;
 
-// Refreshes the glance summary every Kuma.BACKGROUND_PERIOD seconds.
+// Refreshes the glance summary every Kuma.backgroundPeriod() seconds.
 (:background)
 class KumaServiceDelegate extends System.ServiceDelegate {
 

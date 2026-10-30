@@ -42,13 +42,17 @@ class KumaApp extends Application.AppBase {
     }
 
     function onSettingsChanged() as Void {
+        registerBackground();
         WatchUi.requestUpdate();
     }
 
     (:glance)
     private function registerBackground() as Void {
-        if (Background.getTemporalEventRegisteredTime() == null) {
-            Background.registerForTemporalEvent(new Time.Duration(Kuma.BACKGROUND_PERIOD));
+        // Re-registered when the interval setting changed.
+        var period = Kuma.backgroundPeriod();
+        var registered = Background.getTemporalEventRegisteredTime();
+        if (!(registered instanceof Time.Duration) || registered.value() != period) {
+            Background.registerForTemporalEvent(new Time.Duration(period));
         }
     }
 }

@@ -27,14 +27,16 @@ class KumaView extends WatchUi.View {
 
     function initialize() {
         View.initialize();
-        // Last payload (from a refresh or a Wi-Fi sync), shown until the next refresh succeeds.
-        var cached = Application.Storage.getValue(Kuma.STORAGE_FULL);
-        if (cached instanceof Dictionary && Kuma.isValid(cached) && cached["ts"] instanceof Number) {
-            show(cached);
-        }
     }
 
+    // The cache is read on every show, not just once: after a Wi-Fi sync the system shows this
+    // view again instead of creating a new one, and the sync has just written a newer payload.
     function onShow() as Void {
+        var cached = Application.Storage.getValue(Kuma.STORAGE_FULL);
+        if (cached instanceof Dictionary && Kuma.isValid(cached) && cached["ts"] instanceof Number
+                && (_updatedAt == null || (cached["ts"] as Number) > _updatedAt)) {
+            show(cached);
+        }
         refresh();
     }
 
