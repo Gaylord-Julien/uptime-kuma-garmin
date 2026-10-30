@@ -11,13 +11,15 @@ class KumaSyncDelegate extends Communications.SyncDelegate {
         SyncDelegate.initialize();
     }
 
+    // Only syncs the user asked for: a sync the system starts by itself while charging can
+    // block charging (known Connect IQ issue).
     function isSyncNeeded() as Boolean {
-        return true;
+        return Application.Storage.getValue(Kuma.STORAGE_SYNC_REQUESTED) == true;
     }
 
     function onStartSync() as Void {
         if (Kuma.preflight() == Kuma.ERR_NOT_CONFIGURED) {
-            Communications.notifySyncComplete(WatchUi.loadResource(Rez.Strings.ErrNotConfigured) as String);
+            finish(WatchUi.loadResource(Rez.Strings.ErrNotConfigured) as String);
             return;
         }
         Kuma.request(false, method(:onResponse));
@@ -25,16 +27,21 @@ class KumaSyncDelegate extends Communications.SyncDelegate {
 
     function onStopSync() as Void {
         Communications.cancelAllRequests();
-        Communications.notifySyncComplete(null);
+        finish(null);
     }
 
     // The full payload is cached for the app to show on its next launch.
     function onResponse(responseCode as Number, data as Dictionary or String or Null) as Void {
         if (responseCode == 200 && data instanceof Dictionary && Kuma.isValid(data)) {
             Kuma.cache(data);
-            Communications.notifySyncComplete(null);
+            finish(null);
         } else {
-            Communications.notifySyncComplete("HTTP " + responseCode);
+            finish("HTTP " + responseCode);
         }
+    }
+
+    private function finish(errorMessage as String?) as Void {
+        Application.Storage.deleteValue(Kuma.STORAGE_SYNC_REQUESTED);
+        Communications.notifySyncComplete(errorMessage);
     }
 }

@@ -12,6 +12,8 @@ module Kuma {
     const STORAGE_SUMMARY = "s";
     // Last full payload from the proxy plus "ts", shown by the app when it can't refresh.
     const STORAGE_FULL = "f";
+    // Set when the user asks for a Wi-Fi sync, so the system can't start one on its own.
+    const STORAGE_SYNC_REQUESTED = "r";
     // Background temporal events can't fire more often than every 5 minutes.
     const BACKGROUND_PERIOD = 5 * 60;
 

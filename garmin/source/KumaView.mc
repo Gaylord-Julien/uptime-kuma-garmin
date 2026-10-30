@@ -49,6 +49,7 @@ class KumaView extends WatchUi.View {
 
     function onWifiChecked(result as { :wifiAvailable as Boolean, :errorCode as Communications.WifiConnectionStatus }) as Void {
         if (result[:wifiAvailable] == true) {
+            Application.Storage.setValue(Kuma.STORAGE_SYNC_REQUESTED, true);
             Communications.startSync2({ :message => text(Rez.Strings.SyncMessage) });
         } else {
             _error = Kuma.ERR_NO_WIFI;
