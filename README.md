@@ -40,8 +40,16 @@ Or with Compose: `cd proxy && cp .env.example .env`, fill it in, then `docker co
 | `PORT` | `8080` | |
 
 The watch requires **HTTPS with a valid certificate**: put the proxy behind your reverse proxy (nginx,
-Traefik, Caddy…) or `tailscale funnel`. On Coolify, create a *Docker Image* resource with the image above,
-port `8080`, a domain and the variables.
+Traefik, Caddy…) or `tailscale funnel`.
+
+### On Coolify
+
+Coolify handles HTTPS for you, so there is nothing else to set up:
+
+1. *New resource → Docker Image*: `ghcr.io/gaylord-julien/uptime-kuma-garmin-proxy:latest`
+2. Port `8080`, a domain (e.g. `https://kuma-watch.example.org`)
+3. Variables: `KUMA_URL`, `KUMA_API_KEY`, `PROXY_TOKEN`
+4. Deploy, then use `https://kuma-watch.example.org/status` as the proxy URL on the watch.
 
 Check it:
 
