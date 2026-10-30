@@ -59,7 +59,7 @@ curl -H "Authorization: Bearer <PROXY_TOKEN>" https://kuma-watch.example.org/sta
 3. Add it to the glance loop from the watch's glance edit mode.
 
 Tap the screen (or press START on watches without a touch screen) to refresh. The glance updates in
-the background every 5 minutes through the phone.
+the background through the phone, every 5 minutes by default (*Background refresh* setting: 5 to 60).
 
 On watches with Wi-Fi, do the same without the phone to refresh over Wi-Fi: the watch shows its sync
 screen, then returns to the list. This needs a Wi-Fi network saved on the watch, and only happens when
