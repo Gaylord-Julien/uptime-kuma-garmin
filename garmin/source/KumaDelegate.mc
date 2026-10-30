@@ -12,7 +12,7 @@ class KumaDelegate extends WatchUi.BehaviorDelegate {
 
     // Tap or top-right (action) button.
     function onSelect() as Boolean {
-        _view.refresh();
+        _view.onTap();
         return true;
     }
 

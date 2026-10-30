@@ -26,10 +26,34 @@ class KumaView extends WatchUi.View {
 
     function initialize() {
         View.initialize();
+        // Last payload (from a refresh or a Wi-Fi sync), shown until the next refresh succeeds.
+        var cached = Application.Storage.getValue(Kuma.STORAGE_FULL);
+        if (cached instanceof Dictionary && Kuma.isValid(cached) && cached["ts"] instanceof Number) {
+            show(cached);
+        }
     }
 
     function onShow() as Void {
         refresh();
+    }
+
+    // Without a phone, a tap asks the system to sync over Wi-Fi instead (the app is relaunched
+    // in sync mode, see KumaSyncDelegate), if an access point with internet is in range.
+    function onTap() as Void {
+        if (!_loading && (Kuma.preflight() == Kuma.ERR_NO_PHONE || phoneUnreachable(_error))) {
+            Communications.checkWifiConnection(method(:onWifiChecked));
+            return;
+        }
+        refresh();
+    }
+
+    function onWifiChecked(result as { :wifiAvailable as Boolean, :errorCode as Communications.WifiConnectionStatus }) as Void {
+        if (result[:wifiAvailable] == true) {
+            Communications.startSync2({ :message => text(Rez.Strings.SyncMessage) });
+        } else {
+            _error = Kuma.ERR_NO_WIFI;
+            WatchUi.requestUpdate();
+        }
     }
 
     function refresh() as Void {
@@ -47,17 +71,21 @@ class KumaView extends WatchUi.View {
     function onResponse(responseCode as Number, data as Dictionary or String or Null) as Void {
         _loading = false;
         if (responseCode == 200 && data instanceof Dictionary && Kuma.isValid(data)) {
-            _monitors = data["h"] as Array<Array>;
-            _down = data["d"] as Number;
-            _total = data["t"] as Number;
-            var summary = Kuma.summarize(data);
-            _updatedAt = summary["ts"] as Number;
-            _offset = clampOffset(_offset);
-            Application.Storage.setValue(Kuma.STORAGE_SUMMARY, summary as Application.Storage.ValueType);
+            Kuma.cache(data);
+            show(data);
         } else {
             _error = responseCode == 200 ? Kuma.ERR_BAD_RESPONSE : responseCode;
         }
         WatchUi.requestUpdate();
+    }
+
+    // data: a valid payload with its "ts" set by Kuma.cache().
+    private function show(data as Dictionary) as Void {
+        _monitors = data["h"] as Array<Array>;
+        _down = data["d"] as Number;
+        _total = data["t"] as Number;
+        _updatedAt = data["ts"] as Number;
+        _offset = clampOffset(_offset);
     }
 
     // Scrolls by one page (minus one row, to keep context); returns false at the ends.
@@ -162,6 +190,8 @@ class KumaView extends WatchUi.View {
         var y = (h * 0.86).toNumber();
         if (_loading) {
             drawCentered(dc, cx, y, Graphics.FONT_XTINY, Graphics.COLOR_LT_GRAY, text(Rez.Strings.Updating));
+        } else if (phoneUnreachable(_error)) {
+            drawCentered(dc, cx, y, Graphics.FONT_XTINY, Graphics.COLOR_LT_GRAY, text(Rez.Strings.TapToSync));
         } else if (_error != null) {
             drawCentered(dc, cx, y, Graphics.FONT_XTINY, Graphics.COLOR_RED, errorText(_error));
         } else if (_updatedAt != null) {
@@ -174,7 +204,8 @@ class KumaView extends WatchUi.View {
         dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
         KumaIcons.drawWarning(dc, cx, (h * 0.28).toNumber(), r);
         drawCentered(dc, cx, h / 2, Graphics.FONT_SMALL, Graphics.COLOR_WHITE, errorText(_error));
-        drawCentered(dc, cx, (h * 0.72).toNumber(), Graphics.FONT_XTINY, Graphics.COLOR_LT_GRAY, text(Rez.Strings.TapToRetry));
+        drawCentered(dc, cx, (h * 0.72).toNumber(), Graphics.FONT_XTINY, Graphics.COLOR_LT_GRAY,
+            text(phoneUnreachable(_error) ? Rez.Strings.TapToSync : Rez.Strings.TapToRetry));
     }
 
     private function drawCentered(dc as Graphics.Dc, x as Number, y as Number, font as Graphics.FontType,
@@ -216,11 +247,21 @@ class KumaView extends WatchUi.View {
         return Graphics.COLOR_GREEN;
     }
 
+    // The phone is gone or not answering. Right after Bluetooth is turned off on the phone the
+    // watch still reports it as connected for a while, so requests time out instead of failing.
+    private function phoneUnreachable(code as Number?) as Boolean {
+        return code == Kuma.ERR_NO_PHONE || code == Communications.BLE_CONNECTION_UNAVAILABLE
+            || code == Communications.BLE_HOST_TIMEOUT || code == Communications.BLE_SERVER_TIMEOUT
+            || code == Communications.BLE_ERROR || code == Communications.NETWORK_REQUEST_TIMED_OUT;
+    }
+
     private function errorText(code as Number?) as String {
         if (code == Kuma.ERR_NOT_CONFIGURED) {
             return text(Rez.Strings.ErrNotConfigured);
         } else if (code == Kuma.ERR_NO_PHONE || code == Communications.BLE_CONNECTION_UNAVAILABLE) {
             return text(Rez.Strings.ErrNoPhone);
+        } else if (code == Kuma.ERR_NO_WIFI) {
+            return text(Rez.Strings.ErrNoWifi);
         } else if (code == Communications.NETWORK_REQUEST_TIMED_OUT || code == Communications.BLE_HOST_TIMEOUT) {
             return text(Rez.Strings.ErrTimeout);
         } else if (code == Communications.SECURE_CONNECTION_REQUIRED) {

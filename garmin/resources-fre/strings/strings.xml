@@ -14,10 +14,14 @@
     <string id="Updating">Mise à jour…</string>
     <string id="NoMonitors">Aucun monitor actif</string>
     <string id="TapToRetry">Toucher pour réessayer</string>
+    <string id="TapToSync">Toucher : synchro Wi-Fi</string>
+    <string id="SyncMessage">MAJ des monitors</string>
     <string id="ErrNotConfigured">URL/token
 non configurés</string>
     <string id="ErrNoPhone">Pas de connexion
 téléphone</string>
+    <string id="ErrNoWifi">Ni téléphone
+ni Wi-Fi</string>
     <string id="ErrTimeout">Délai dépassé</string>
     <string id="ErrHttps">HTTPS requis</string>
     <string id="ErrToken">Token refusé</string>

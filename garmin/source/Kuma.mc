@@ -10,6 +10,8 @@ import Toybox.Time.Gregorian;
 module Kuma {
     // Last known summary {"d" => down, "t" => total, "ts" => epoch seconds}, read by the glance.
     const STORAGE_SUMMARY = "s";
+    // Last full payload from the proxy plus "ts", shown by the app when it can't refresh.
+    const STORAGE_FULL = "f";
     // Background temporal events can't fire more often than every 5 minutes.
     const BACKGROUND_PERIOD = 5 * 60;
 
@@ -23,6 +25,7 @@ module Kuma {
     const ERR_NOT_CONFIGURED = -9001;
     const ERR_NO_PHONE = -9002;
     const ERR_BAD_RESPONSE = -9003;
+    const ERR_NO_WIFI = -9004;
 
     // Returns an error code if a request can't be sent right now, null otherwise.
     function preflight() as Number? {
@@ -65,6 +68,15 @@ module Kuma {
 
     function summarize(data as Dictionary) as Dictionary<Application.PropertyKeyType, Application.PropertyValueType> {
         return { "d" => data["d"] as Number, "t" => data["t"] as Number, "ts" => Time.now().value() };
+    }
+
+    // Called by the app and the sync delegate, never by the background service (which only
+    // fetches the summary).
+    function cache(data as Dictionary) as Void {
+        var summary = summarize(data);
+        data["ts"] = summary["ts"];
+        Application.Storage.setValue(STORAGE_FULL, data as Application.Storage.ValueType);
+        Application.Storage.setValue(STORAGE_SUMMARY, summary as Application.Storage.ValueType);
     }
 
     // "14:32" (or "2:32 pm" on a 12-hour watch) today, "24 Oct" if older than a day

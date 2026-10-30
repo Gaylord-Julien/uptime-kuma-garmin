@@ -15,10 +15,14 @@
     <string id="Updating">Updating…</string>
     <string id="NoMonitors">No active monitor</string>
     <string id="TapToRetry">Tap to retry</string>
+    <string id="TapToSync">Tap to sync over Wi-Fi</string>
+    <string id="SyncMessage">Updating monitors</string>
     <string id="ErrNotConfigured">URL/token
 not configured</string>
     <string id="ErrNoPhone">No phone
 connection</string>
+    <string id="ErrNoWifi">No phone
+or Wi-Fi</string>
     <string id="ErrTimeout">Request timed out</string>
     <string id="ErrHttps">HTTPS required</string>
     <string id="ErrToken">Token rejected</string>

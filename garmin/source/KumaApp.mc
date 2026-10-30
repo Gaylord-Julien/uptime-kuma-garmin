@@ -1,5 +1,6 @@
 import Toybox.Application;
 import Toybox.Background;
+import Toybox.Communications;
 import Toybox.Lang;
 import Toybox.System;
 import Toybox.Time;
@@ -26,6 +27,10 @@ class KumaApp extends Application.AppBase {
 
     function getServiceDelegate() as [System.ServiceDelegate] {
         return [new KumaServiceDelegate()];
+    }
+
+    function getSyncDelegate() as Communications.SyncDelegate? {
+        return new KumaSyncDelegate();
     }
 
     // Runs in the foreground (app or glance) with what the service passed to Background.exit().
