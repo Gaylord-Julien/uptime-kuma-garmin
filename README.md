@@ -9,6 +9,7 @@ Unofficial project, not affiliated with Uptime Kuma. MIT licensed.
 
 ```
 watch ──BLE──▶ phone (Garmin Connect) ──HTTPS──▶ proxy ──▶ Uptime Kuma /metrics
+watch ──Wi-Fi (sync, on demand)─────────HTTPS──▶ proxy
 ```
 
 The watch can't read Uptime Kuma directly, so it goes through a small self-hosted proxy that turns
@@ -56,8 +57,11 @@ curl -H "Authorization: Bearer <PROXY_TOKEN>" https://kuma-watch.example.org/sta
    - the proxy token.
 3. Add it to the glance loop from the watch's glance edit mode.
 
-Tap the screen to refresh. The glance updates in the background every 5 minutes. The watch needs a
-connected phone: there is no direct Internet access.
+Tap the screen to refresh. The glance updates in the background every 5 minutes through the phone.
+
+Without the phone, tap the screen to refresh over the watch's Wi-Fi: the watch shows its sync screen,
+then returns to the list. This needs a Wi-Fi network saved on the watch, and only happens when you ask
+for it. The last list is kept and shown when no refresh is possible.
 
 ## API
 
