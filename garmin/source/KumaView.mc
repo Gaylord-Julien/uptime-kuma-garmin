@@ -3,6 +3,7 @@ import Toybox.Communications;
 import Toybox.Graphics;
 import Toybox.Lang;
 import Toybox.Math;
+import Toybox.System;
 import Toybox.Time;
 import Toybox.WatchUi;
 
@@ -192,7 +193,7 @@ class KumaView extends WatchUi.View {
         if (_loading) {
             drawCentered(dc, cx, y, Graphics.FONT_XTINY, Graphics.COLOR_LT_GRAY, text(Rez.Strings.Updating));
         } else if (phoneUnreachable(_error)) {
-            drawCentered(dc, cx, y, Graphics.FONT_XTINY, Graphics.COLOR_LT_GRAY, text(Rez.Strings.TapToSync));
+            drawCentered(dc, cx, y, Graphics.FONT_XTINY, Graphics.COLOR_LT_GRAY, hint(true));
         } else if (_error != null) {
             drawCentered(dc, cx, y, Graphics.FONT_XTINY, Graphics.COLOR_RED, errorText(_error));
         } else if (_updatedAt != null) {
@@ -206,7 +207,7 @@ class KumaView extends WatchUi.View {
         KumaIcons.drawWarning(dc, cx, (h * 0.28).toNumber(), r);
         drawCentered(dc, cx, h / 2, Graphics.FONT_SMALL, Graphics.COLOR_WHITE, errorText(_error));
         drawCentered(dc, cx, (h * 0.72).toNumber(), Graphics.FONT_XTINY, Graphics.COLOR_LT_GRAY,
-            text(phoneUnreachable(_error) ? Rez.Strings.TapToSync : Rez.Strings.TapToRetry));
+            hint(phoneUnreachable(_error)));
     }
 
     private function drawCentered(dc as Graphics.Dc, x as Number, y as Number, font as Graphics.FontType,
@@ -246,6 +247,14 @@ class KumaView extends WatchUi.View {
             return Graphics.COLOR_BLUE;
         }
         return Graphics.COLOR_GREEN;
+    }
+
+    // "Tap…" on touch screens, "START…" on button-only watches (Forerunner 255, some fēnix…).
+    private function hint(sync as Boolean) as String {
+        if (System.getDeviceSettings().isTouchScreen) {
+            return text(sync ? Rez.Strings.TapToSync : Rez.Strings.TapToRetry);
+        }
+        return text(sync ? Rez.Strings.PressToSync : Rez.Strings.PressToRetry);
     }
 
     // The phone is gone or not answering. Right after Bluetooth is turned off on the phone the

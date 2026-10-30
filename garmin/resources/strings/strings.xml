@@ -16,6 +16,8 @@
     <string id="NoMonitors">No active monitor</string>
     <string id="TapToRetry">Tap to retry</string>
     <string id="TapToSync">Tap to sync over Wi-Fi</string>
+    <string id="PressToRetry">Press START to retry</string>
+    <string id="PressToSync">START: sync over Wi-Fi</string>
     <string id="SyncMessage">Updating monitors</string>
     <string id="ErrNotConfigured">URL/token
 not configured</string>

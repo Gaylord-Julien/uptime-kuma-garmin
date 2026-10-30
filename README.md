@@ -2,8 +2,9 @@
 
 [![proxy](https://github.com/Gaylord-Julien/uptime-kuma-garmin/actions/workflows/proxy.yml/badge.svg)](https://github.com/Gaylord-Julien/uptime-kuma-garmin/actions/workflows/proxy.yml)
 
-Your [Uptime Kuma](https://github.com/louislam/uptime-kuma) monitors on a Garmin vivoactive 6: a glance
-("All up" / "X down") and a list of every monitor with its status.
+Your [Uptime Kuma](https://github.com/louislam/uptime-kuma) monitors on your Garmin watch (round-screen
+models with Connect IQ 5 or later): a glance ("All up" / "X down") and a list of every monitor with its
+status.
 
 Unofficial project, not affiliated with Uptime Kuma. MIT licensed.
 
@@ -57,11 +58,12 @@ curl -H "Authorization: Bearer <PROXY_TOKEN>" https://kuma-watch.example.org/sta
    - the proxy token.
 3. Add it to the glance loop from the watch's glance edit mode.
 
-Tap the screen to refresh. The glance updates in the background every 5 minutes through the phone.
+Tap the screen (or press START on watches without a touch screen) to refresh. The glance updates in
+the background every 5 minutes through the phone.
 
-Without the phone, tap the screen to refresh over the watch's Wi-Fi: the watch shows its sync screen,
-then returns to the list. This needs a Wi-Fi network saved on the watch, and only happens when you ask
-for it. The last list is kept and shown when no refresh is possible.
+On watches with Wi-Fi, do the same without the phone to refresh over Wi-Fi: the watch shows its sync
+screen, then returns to the list. This needs a Wi-Fi network saved on the watch, and only happens when
+you ask for it. The last list is kept and shown when no refresh is possible.
 
 ## API
 
@@ -82,7 +84,7 @@ Proxy (Python ≥ 3.12, standard library only):
 cd proxy && python3 -m unittest discover -s tests
 ```
 
-Watch app (Connect IQ SDK 9.3.0 with the vívoactive 6 device):
+Watch app (Connect IQ SDK 9.3.0 and the devices you build for, from the SDK Manager):
 
 ```bash
 cd garmin
